@@ -1,0 +1,15 @@
+正则表达式：
+^意思是最开始的字符 如 “abc” 与 “^a.*” 为正确
+.为任意字符   *为前者任意数量
+
+图片: https://uploader.shimo.im/f/nQPgyk0LcscZACjh.png图片: https://uploader.shimo.im/f/4UUszDF4vAUyWPrN.png
+
+
+
+同样的 .*为任意字符， str +$意思为str结尾的
+如 “abc” 与 “.*c$” 为正确
+图片: https://uploader.shimo.im/f/uJ5txTzITKkrBPC4.png图片: https://uploader.shimo.im/f/gP6kImbPQbwo2wKP.png
+
+正则表达式的贪婪匹配
+如果“.*(b.*b),*”与“boobooboob”匹配，得到结果为“boobooboob”
+
