@@ -32,4 +32,25 @@ screen -d yourname -> 远程detach某个session
 screen -d -r yourname -> 结束当前session并回到yourname这个session
 
 
+安装完成后，直接敲命令screen就可以启动它。但是这样启动的screen会话没有名字，实践上推荐为每个screen会话取一个名字，方便分辨：
+
+[root@TS-DEV ~]# screen -S david 
+screen启动后，会创建第一个窗口，也就是窗口No. 0，并在其中打开一个系统默认的shell，一般都会是bash。所以你敲入命令screen之后，会立刻又返回到命令提示符，仿佛什么也没有发生似的，其实你已经进入Screen的世界了。当然，也可以在screen命令之后加入你喜欢的参数，使之直接打开你指定的程序，例如：
+
+[root@TS-DEV ~]# screen vi david.txt
+screen创建一个执行vi david.txt的单窗口会话，退出vi 将退出该窗口/会话。
+
+之后我们想暂时退出做点别的事情，比如出去散散步，那么在screen窗口键入C-a d，Screen会给出detached提示：
+
+暂时中断会话
+
+[root@TS-DEV ~]# screen -ls
+
+重新连接会话：
+
+[root@TS-DEV ~]# screen -r 12865
+
+
+
+
 
