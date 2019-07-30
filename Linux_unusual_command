@@ -53,6 +53,12 @@ screen创建一个执行vi david.txt的单窗口会话，退出vi 将退出该�
 
 结束一个session
 
+1、使用screen名字，kill掉。
+
+      screen -S session_name -X quit
+
+或者
+
 
 有两种方法
 
