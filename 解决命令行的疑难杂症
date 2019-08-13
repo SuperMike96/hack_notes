@@ -1,0 +1,18 @@
+Could not get lock /var/lib/dpkg/lock’ Error in Ubuntu [Quick Tip]
+Could not get lock /var/lib/dpkg/lock – open (11: Resource temporarily unavailable)
+Unable to lock the administration directory (/var/lib/dpkg/), is another process using it?
+Could not get lock /var/lib/apt/lists/lock – open (11: Resource temporarily unavailable)
+Unable to lock directory /var/lib/apt/lists/ 
+Could not get lock /var/lib/dpkg/lock – open (11: Resource temporarily unavailable) 
+Unable to lock the administration directory (/var/lib/dpkg/), is another process using it?
+
+ps aux | grep -i apt
+This will show you the id of the process running apt or apt-get. In the example below, the process id is 7343. You can ignore the last line containing ‘grep –color=auto’.
+
+Kill apt process in Ubuntu
+You can use the process id to kill it:
+
+sudo kill -9 <process id>
+Another, easier way would be to use the killall command. This will kill all the instances of a running program:
+
+sudo killall apt apt-get
