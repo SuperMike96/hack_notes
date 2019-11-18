@@ -1,0 +1,66 @@
+Suricata 是一个网络入侵检测和阻止引擎，由开放信息安全基金会以及它所支持的提供商所开发。该引擎是多线程的，内置 IPv6 的支持，可加载预设规则，支持 Barnyard 和 Barnyard2 工具。
+
+
+
+本次安装环境为CentOS 7 64位
+
+用户权限:root,(正式使用时建议使用非root权限,官方文档有操作指导)
+
+1.安装依赖项
+
+yum -y install gcc libpcap-devel pcre-devel libyaml-devel file-devel \
+
+  zlib-devel jansson-devel nss-devel libcap-ng-devel libnet-devel tar make \
+
+  libnetfilter_queue-devel lua-devel
+
+2.下载最新版Suricata源码包
+
+wget http://www.openinfosecfoundation.org/download/suricata-3.1.tar.gz
+
+3.编译安装
+
+tar -xvzf suricata-3.1.tar.gz
+
+cd suricata-3.1
+
+./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --enable-nfqueue --enable-lua
+
+make
+
+make install
+
+ldconfig
+
+4.安装这些默认的配置文件
+
+make install-conf
+
+make install-rules
+
+5.启动服务
+
+[root@localhost suricata]# /usr/bin/suricata -c /etc/suricata/suricata.yaml -i eno16777736
+
+其中-i 参数后为网卡名称
+6.重要文件位置
+
+#yaml配置文件及规则文件
+
+/etc/suricata/suricata.yaml
+
+
+
+#log文件
+
+/var/log/suricata
+
+
+至于想生成什么类型的日志,可在/etc/suricata/suricata.yaml中配置输出
+
+7.部分日志输出效果如下:
+
+
+
+
+后续将介绍Suricata的日志集中管理和图表展示
